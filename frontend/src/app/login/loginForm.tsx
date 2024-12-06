@@ -1,5 +1,6 @@
 "use client";
 
+import { redirect } from 'next/navigation';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -36,8 +37,8 @@ export function LoginForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    loginAction(values).then((data) => {
-      console.log(data);
+    loginAction(values).then(() => {
+        redirect('/home');
     });
   }
 
