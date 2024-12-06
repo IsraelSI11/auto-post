@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import Link from "next/link";
+import { LoginForm } from "./loginForm";
 
 export default function LoginPage() {
   return (
@@ -27,35 +26,7 @@ export default function LoginPage() {
                 <Separator className="mt-9 mb-7" />
               </div>
 
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <label className="text-muted-foreground font-medium" htmlFor="email">
-                    Correo electrónico
-                  </label>
-                  <Input 
-                    id="email" 
-                    type="email" 
-                    placeholder="example@hotmail.com"
-                    required 
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-muted-foreground font-medium" htmlFor="password">
-                    Contraseña
-                  </label>
-                  <Input 
-                    id="password" 
-                    type="password" 
-                    placeholder="********"
-                    required 
-                  />
-                </div>
-
-                <Button className="w-full bg-gradient-to-r from-yinmn-blue to-air-superiority-blue hover:bg-blue-700 text-white rounded-xl">
-                  Iniciar sesión
-                </Button>
-              </div>
+              <LoginForm />
 
               <div className="text-center text-sm mt-7">
                 ¿No tienes cuenta?{" "}
