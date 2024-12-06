@@ -10,21 +10,21 @@ def get():
 @routes.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    username = data.get('username')
+    email = data.get('email')
     password = data.get('password')
     
-    if not username or not password:
-        return jsonify({'message': 'Username and password are required!'}), 400
+    if not email or not password:
+        return jsonify({'message': 'email and password are required!'}), 400
 
-    return jsonify(register_user(username, password))
+    return jsonify(register_user(email, password))
 
 @routes.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    username = data.get('username')
+    email = data.get('email')
     password = data.get('password')
 
-    return jsonify(login_user(username, password))
+    return jsonify(login_user(email, password))
 
 @routes.route('/protected', methods=['GET'])
 def protected():
