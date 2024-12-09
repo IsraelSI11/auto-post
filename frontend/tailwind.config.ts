@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 
 export default {
 	darkMode: ["class"],
@@ -69,5 +70,30 @@ export default {
 		}
 	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"),
+	plugin(function({ addUtilities }) {
+		addUtilities({
+		  '.no-scrollbar::-webkit-scrollbar': {
+			'display': 'none',
+		  },
+		  '.no-scrollbar': {
+			'-ms-overflow-style': 'none',
+			'scrollbar-width': 'none',
+		  },
+		  '.styled-scrollbar::-webkit-scrollbar': {
+			'width': '10px',
+		  },
+		  '.styled-scrollbar::-webkit-scrollbar-track': {
+			'background': 'transparent',
+		  },
+		  '.styled-scrollbar::-webkit-scrollbar-thumb': {
+			'background': '#888',
+			'border-radius': '10px',
+		  },
+		  '.styled-scrollbar::-webkit-scrollbar-thumb:hover': {
+			'background': '#555',
+		  },
+		})
+	  })
+  ],
 } satisfies Config;

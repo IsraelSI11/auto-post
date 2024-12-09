@@ -11,20 +11,20 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetchAccounts();
+    //fetchAccounts();
   }, []);
 
-  const fetchAccounts = async () => {
-    try {
-      const response = await fetch("/api/social-accounts");
-      const data = await response.json();
-      setAccounts(data);
-    } catch (error) {
-      console.error("Error fetching accounts:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const fetchAccounts = async () => {
+  //   try {
+  //     const response = await fetch("/api/social-accounts");
+  //     const data = await response.json();
+  //     setAccounts(data);
+  //   } catch (error) {
+  //     console.error("Error fetching accounts:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const handleDelete = async (id: string) => {
     setAccounts(accounts.filter((account) => account.id !== id));
