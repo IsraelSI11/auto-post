@@ -27,7 +27,10 @@ def login_user(email, password):
 def verify_token(token):
     try:
         decoded_token = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
-        return {'email': decoded_token['email']}, 200
+        user = User.query.filter_by(email=decoded_token['email']).first()
+        if not user:
+            return {'message': 'Invalid token!'}, 401
+        return {'user': user}, 200
     except jwt.ExpiredSignatureError:
         return {'message': 'Token has expired!'}, 401
     except jwt.InvalidTokenError:

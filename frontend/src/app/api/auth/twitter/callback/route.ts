@@ -3,6 +3,7 @@ import oauth from "oauth";
 import { cookies } from "next/headers";
 import { NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
+import { linkAccount } from "@/lib/linkAccount";
 
 const consumer = new oauth.OAuth(
   "https://api.twitter.com/oauth/request_token",
@@ -37,18 +38,27 @@ export async function GET(req: NextRequest, res: NextApiResponse) {
       oauth_token,
       oauthTokenSecret,
       oauth_verifier,
-      (error, oauthAccessToken, oauthAccessTokenSecret, results) => {
+      async (error, oauthAccessTokenSecret, results) => {
         if (error) {
-          resolve(NextResponse.json({ message: "Error" }, { status: 500 }));
-        } else {
+          console.error("OAuth Access Token Error:", error);
+          return resolve(NextResponse.json({ message: "Error" }, { status: 500 }));
+        }
+
+        try {
           console.log("results", results);
           console.log("oauthAccessTokenSecret", oauthAccessTokenSecret);
-          // Aquí puedes almacenar los tokens del usuario en tu base de datos.
-          // Por ejemplo:
-          // saveUserTokens(userId, oauthAccessToken, oauthAccessTokenSecret);
 
-          // Devuelve los datos necesarios o redirige al usuario.
-          resolve(NextResponse.redirect(`http://localhost:3000/home?token=${oauthAccessToken}`));
+          const jwt = cookieStore.get("jwt")?.value ?? "";
+          if (!jwt) {
+            return resolve(NextResponse.json({ message: "JWT not found" }, { status: 400 }));
+          }
+
+          await linkAccount({ jwt, oauth_secret: oauthAccessTokenSecret });
+
+          return resolve(NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/home`));
+        } catch (err) {
+          console.error("Link Account Error:", err);
+          return resolve(NextResponse.json({ message: "Internal Server Error" }, { status: 500 }));
         }
       },
     );

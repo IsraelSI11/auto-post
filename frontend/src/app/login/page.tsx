@@ -6,7 +6,7 @@ import { LoginForm } from "./loginForm";
 export default function LoginPage() {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-100 p-4">
-      <div className="w-full max-w-6xl h-[80vh] bg-white rounded-2xl shadow-lg overflow-hidden">
+      <div className="w-full max-w-6xl md:h-[80vh] bg-white rounded-2xl shadow-lg overflow-hidden">
         <div className="flex flex-col lg:flex-row h-full">
           {/* Left side - Login form */}
           <div className="flex-1 flex items-center justify-center p-8 lg:p-12">

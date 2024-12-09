@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Button } from "@/components/ui/button"
 import { SocialAccount } from '../types/socialAccount';
 import { LinkedAccountRow } from './LinkedAccountRow';
+import LoginTwitterButton from './LoginTwitterButton';
 
 
 export default function HomePage() {
@@ -34,11 +34,9 @@ export default function HomePage() {
   return (
     <div className="bg-[#F8F9FA] min-h-screen p-6">
       <div className="max-w-2xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-semibold">Redes sociales</h1>
-          <Button className="bg-[#2C5784] hover:bg-[#234569] text-white">
-            Vincular red
-          </Button>
+        <div className="flex items-center flex-wrap md:flex-nowrap justify-center text-center md:text-left space-y-3 md:space-y-0 md:justify-between mb-6">
+          <h1 className="text-5xl font-bold">Redes sociales</h1>
+          <LoginTwitterButton />
         </div>
 
         <div className="space-y-3">

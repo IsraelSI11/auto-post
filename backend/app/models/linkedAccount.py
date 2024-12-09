@@ -6,28 +6,20 @@ class LinkedAccount(db.Model):
     __tablename__ = 'linked_account'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    platform = db.Column(db.String(20), nullable=False)
-    account_identifier = db.Column(db.String(80), unique=True, nullable=False)  # e.g., username or ID
+    oauth_secret = db.Column(db.String(255), unique=True, nullable=False)
 
     # Define relación inversa
     user = db.relationship('User', back_populates='linked_accounts')
 
-    @validates('platform')
-    def validate_platform(self, key, value):
-        allowed_platforms = ['twitter', 'tiktok', 'instagram']
-        if value not in allowed_platforms:
-            raise ValueError(f"Plataforma no permitida: {value}")
-        return value
-
     @staticmethod
-    def add_linked_account(user_id, platform, account_identifier):
+    def add_linked_account(user_id, oauth_secret):
         # Verificar si ya existe una cuenta de esta plataforma para el usuario
-        existing_account = LinkedAccount.query.filter_by(user_id=user_id, platform=platform).first()
+        existing_account = LinkedAccount.query.filter_by(user_id=user_id).first()
         if existing_account:
-            raise ValueError(f"El usuario ya tiene una cuenta enlazada de {platform}.")
+            raise ValueError(f"El usuario ya tiene una cuenta enlazada.")
 
         # Crear nueva cuenta enlazada
-        new_account = LinkedAccount(user_id=user_id, platform=platform, account_identifier=account_identifier)
+        new_account = LinkedAccount(user_id=user_id, oauth_secret=oauth_secret)
         db.session.add(new_account)
         db.session.commit()
         return new_account

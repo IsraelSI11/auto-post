@@ -22,8 +22,8 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///autopost.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
-    app.register_blueprint(auth_routes, url_prefix='/auth')
-    app.register_blueprint(linked_accounts_routes, url_prefix='/api')
+    app.register_blueprint(auth_routes, url_prefix='/')
+    app.register_blueprint(linked_accounts_routes, url_prefix='/link')
     with app.app_context():
         init_db()
     return app
