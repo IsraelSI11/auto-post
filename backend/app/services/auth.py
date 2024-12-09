@@ -1,4 +1,4 @@
-from .models import User
+from ..models.user import User
 from werkzeug.security import check_password_hash
 import jwt
 import datetime

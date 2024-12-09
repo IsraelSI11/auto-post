@@ -15,13 +15,15 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 
 def create_app():
-    from .routes import routes
+    from .routes.authRoutes import auth_routes
+    from .routes.linkedAccountsRoutes import linked_accounts_routes
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///autopost.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
-    app.register_blueprint(routes)
+    app.register_blueprint(auth_routes, url_prefix='/auth')
+    app.register_blueprint(linked_accounts_routes, url_prefix='/api')
     with app.app_context():
         init_db()
     return app

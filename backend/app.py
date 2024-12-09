@@ -1,6 +1,6 @@
 from app import create_app, db
 from app.routes import routes
-from app.models import *
+from backend.app.models.user import *
 
 app = create_app()
 
