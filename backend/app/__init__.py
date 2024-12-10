@@ -15,6 +15,8 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 
 def create_app():
+    from .models.linkedAccount import LinkedAccount
+    from .models.user import User
     from .routes.authRoutes import auth_routes
     from .routes.linkedAccountsRoutes import linked_accounts_routes
     app = Flask(__name__)

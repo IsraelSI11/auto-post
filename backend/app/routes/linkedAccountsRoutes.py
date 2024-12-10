@@ -12,15 +12,17 @@ def authenticate_user(func):
         if not token:
             return jsonify({'message': 'Token is missing!'}), 401
 
-        user = verify_token(token)  # Verificar el token y obtener el usuario
-        if not user:
-            return jsonify({'message': 'Invalid or expired token!'}), 401
+        result, status_code = verify_token(token)  # Verificar el token y obtener el usuario
+        if status_code != 200:
+            return jsonify(result), status_code
+
+        user = result['user']
 
         # Pasar el usuario autenticado a la función de la ruta
         return func(user, *args, **kwargs)
     return wrapper
 
-@linked_accounts_routes.route('/linked-accounts', methods=['GET'])
+@linked_accounts_routes.route('/', methods=['GET'])
 @authenticate_user
 def get_linked_accounts(user):
     from ..models.linkedAccount import LinkedAccount
@@ -30,7 +32,7 @@ def get_linked_accounts(user):
         'oauth_secret': account.oauth_secret
     } for account in accounts]), 200
 
-@linked_accounts_routes.route('/linked-accounts', methods=['POST'])
+@linked_accounts_routes.route('/', methods=['POST'])
 @authenticate_user
 def add_linked_account(user):
     from ..models.linkedAccount import LinkedAccount

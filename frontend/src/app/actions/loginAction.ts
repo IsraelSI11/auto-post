@@ -18,6 +18,6 @@ export async function loginAction({ email, password }: LoginParams) {
 
   const data = await response.json();
   const cookieStore = await cookies();
-  cookieStore.set("jwt", data.token);
+  cookieStore.set("jwt", data[0].token);
   return data;
 }
