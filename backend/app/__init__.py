@@ -18,6 +18,7 @@ def create_app():
     from .models.linkedAccount import LinkedAccount
     from .models.user import User
     from .routes.authRoutes import auth_routes
+    from .routes.postRoutes import post_routes
     from .routes.linkedAccountsRoutes import linked_accounts_routes
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
@@ -26,6 +27,7 @@ def create_app():
     db.init_app(app)
     app.register_blueprint(auth_routes, url_prefix='/')
     app.register_blueprint(linked_accounts_routes, url_prefix='/link')
+    app.register_blueprint(post_routes, url_prefix='/post')
     with app.app_context():
         init_db()
     return app

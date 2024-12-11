@@ -29,7 +29,7 @@ def get_linked_accounts(user):
     accounts = LinkedAccount.query.filter_by(user_id=user.id).all()
     return jsonify([{
         'id': account.id,
-        'oauth_secret': account.oauth_secret
+        'access_token': account.access_token
     } for account in accounts]), 200
 
 @linked_accounts_routes.route('/', methods=['POST'])
@@ -37,19 +37,19 @@ def get_linked_accounts(user):
 def add_linked_account(user):
     from ..models.linkedAccount import LinkedAccount
     data = request.get_json()
-    oauth_secret = data.get('oauth_secret')
+    access_token = data.get('access_token')
 
-    if not oauth_secret:
-        return jsonify({'message': 'Oauth_secret is required!'}), 400
+    if not access_token:
+        return jsonify({'message': 'Access_token is required!'}), 400
 
     try:
         new_account = LinkedAccount.add_linked_account(
             user_id=user.id,
-            oauth_secret=oauth_secret
+            access_token=access_token,
         )
         return jsonify({
             'id': new_account.id,
-            'oauth_secret': new_account.oauth_secret
+            'access_token': new_account.access_token
         }), 201
     except ValueError as e:
         return jsonify({'message': str(e)}), 400
