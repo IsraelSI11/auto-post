@@ -1,4 +1,4 @@
 export type LinkAccountParams = {
     jwt: string;
-    oauth_secret: string;
+    access_token: string;
 }

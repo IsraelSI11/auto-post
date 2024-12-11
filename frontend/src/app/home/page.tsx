@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { SocialAccount } from '../types/socialAccount';
 import { LinkedAccountRow } from './LinkedAccountRow';
 import LoginTwitterButton from './LoginTwitterButton';
+import PostTweet from '@/components/PostTweet';
 
 
 export default function HomePage() {
@@ -37,6 +38,7 @@ export default function HomePage() {
         <div className="flex items-center flex-wrap md:flex-nowrap justify-center text-center md:text-left space-y-3 md:space-y-0 md:justify-between mb-6">
           <h1 className="text-5xl font-bold">Redes sociales</h1>
           <LoginTwitterButton />
+          <PostTweet />
         </div>
 
         <div className="space-y-3">
