@@ -10,37 +10,51 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CirclePlus } from "lucide-react";
+import { postTweetAction } from "@/app/actions/postTweetAction";
+import { Post } from "@/app/types/post";
 
-interface CalendarBodyProps {
+type CalendarBodyProps = {
+
   weekDates: Date[];
-}
 
-interface Event {
-  id: string;
-  title: string;
-  date: Date;
-  startTime: string;
-}
+  postsProps: Post[];
 
-export function CalendarBody({ weekDates }: CalendarBodyProps) {
-  const [events, setEvents] = useState<Event[]>([]);
+};
+
+export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
+
+  const [posts, setPosts] = useState(postsProps);
   const [newEvent, setNewEvent] = useState({ title: "" });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedStartTime, setSelectedStartTime] = useState<string | null>(
     null,
   );
+  const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
-  const addEvent = () => {
+  const addEvent = async () => {
     if (selectedDate && newEvent.title && selectedStartTime) {
-      const event: Event = {
-        id: Date.now().toString(),
+      const year = selectedDate.getFullYear();
+      const month = selectedDate.getMonth();
+      const day = selectedDate.getDate();
+      const formattedDate = new Date(`${year}-${(month + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")} ${selectedStartTime}`);
+
+      // Adjust for timezone offset
+      const timezoneOffset = formattedDate.getTimezoneOffset() * 60000;
+      const adjustedDate = new Date(formattedDate.getTime() - timezoneOffset);
+
+      const {job_id} = await postTweetAction({
+        text: newEvent.title,
+        date: adjustedDate,
+      });
+
+      setPosts(posts.concat({
+        id: job_id,
         title: newEvent.title,
-        date: selectedDate,
-        startTime: selectedStartTime,
-      };
-      setEvents([...events, event]);
+        date: formattedDate,
+      }));
+
       setNewEvent({ title: "" });
       setSelectedDate(null);
       setSelectedStartTime(null);
@@ -48,24 +62,25 @@ export function CalendarBody({ weekDates }: CalendarBodyProps) {
   };
 
   const getEventsForDateAndHour = (date: Date, hour: number) => {
-    return events.filter((event) => {
-      const eventDate = new Date(event.date);
+    return posts.filter((post) => {
+      const postDate = new Date(post.date);
       return (
-        eventDate.getDate() === date.getDate() &&
-        eventDate.getMonth() === date.getMonth() &&
-        eventDate.getFullYear() === date.getFullYear() &&
-        parseInt(event.startTime.split(":")[0]) === hour
+        postDate.getDate() === date.getDate() &&
+        postDate.getMonth() === date.getMonth() &&
+        postDate.getFullYear() === date.getFullYear() &&
+        postDate.getHours() === hour
       );
     });
   };
-
-  console.log(events);
 
   return (
     <div className="grid grid-cols-4 md:grid-cols-8">
       <div className="border-r">
         {hours.map((hour) => (
-          <div key={hour} className="h-12 border-b text-xs md:text-lg text-center flex justify-center items-center font-medium p-1">
+          <div
+            key={hour}
+            className="h-12 border-b text-xs md:text-lg text-center flex justify-center items-center font-medium p-1"
+          >
             {hour.toString().padStart(2, "0")}:00
           </div>
         ))}
@@ -73,22 +88,18 @@ export function CalendarBody({ weekDates }: CalendarBodyProps) {
       {weekDates.map((date, dateIndex) => (
         <div key={dateIndex} className="border-r last:border-r-0">
           {hours.map((hour) => (
-            <div
-              key={hour}
-              className="h-12 border-b relative"
-              onClick={() => {
-                setSelectedDate(date);
-                setSelectedStartTime(`${hour.toString().padStart(2, "0")}:00`);
-              }}
-            >
+            <div key={hour} className="h-12 border-b relative">
               <div className="absolute top-0 h-full left-0 right-0 text-xs space-y-2 overflow-y-scroll styled-scrollbar group">
                 {getEventsForDateAndHour(date, hour).map((event) => (
-                  <p
-                    className="text-white font-semibold rounded mt-2 bg-air-superiority-blue hover:bg-uranian-blue hover:text-black pl-1 duration-200 truncate"
+                  <button
+                    className="w-full"
+                    onClick={() => setSelectedEvent(event.id)}
                     key={event.id}
                   >
-                    {event.title}
-                  </p>
+                    <p className="text-white font-semibold rounded mt-2 bg-air-superiority-blue hover:bg-uranian-blue hover:text-black pl-1 duration-200 truncate">
+                      {event.title}
+                    </p>
+                  </button>
                 ))}
                 <div
                   className={`w-full h-full flex justify-center items-center ${
@@ -97,7 +108,14 @@ export function CalendarBody({ weekDates }: CalendarBodyProps) {
                       : ""
                   }`}
                 >
-                  <Button>
+                  <Button
+                    onClick={() => {
+                      setSelectedDate(date);
+                      setSelectedStartTime(
+                        `${hour.toString().padStart(2, "0")}:00`,
+                      );
+                    }}
+                  >
                     <CirclePlus></CirclePlus>
                   </Button>
                 </div>
@@ -116,7 +134,7 @@ export function CalendarBody({ weekDates }: CalendarBodyProps) {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              Add Event for {selectedDate?.toDateString()} at{" "}
+              Publicar tweet para el {selectedDate?.toDateString()} a las{" "}
               {selectedStartTime}
             </DialogTitle>
           </DialogHeader>
@@ -127,7 +145,43 @@ export function CalendarBody({ weekDates }: CalendarBodyProps) {
             }
             placeholder="Enter event title"
           />
-          <Button onClick={addEvent}>Add Event</Button>
+          <Button onClick={addEvent}>Publicar tweet</Button>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={!!selectedEvent}
+        onOpenChange={() => {
+          setSelectedEvent(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {posts.find((post) => post.id === selectedEvent)?.title}
+            </DialogTitle>
+          </DialogHeader>
+          <p>
+            El tweet se publicará el{" "}
+            {posts
+              .find((post) => post.id === selectedEvent)
+              ?.date.toLocaleDateString("es-ES", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}{" "}
+            a las{" "}
+            {new Date(
+              posts.find((post) => post.id === selectedEvent)?.date || new Date(),
+            ).toLocaleTimeString("es-ES", {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+          <div>
+            <Button variant={"destructive"} onClick={addEvent}>
+              Eliminar publicación
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
