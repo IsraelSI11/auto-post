@@ -7,6 +7,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from datetime import datetime
 from ..models.linkedAccount import LinkedAccount
+from ..models.event import Event
+import uuid
 
 post_routes = Blueprint('post_routes', __name__)
 
@@ -40,6 +42,20 @@ def authenticate_user(func):
         return func(user, *args, **kwargs)
     return wrapper
 
+@post_routes.route('/', methods=['GET'])
+@authenticate_user
+def get_scheduled_posts(user):
+    linked_account = LinkedAccount.query.filter_by(user_id=user.id).first()
+    if not linked_account:
+        return jsonify({'message': 'No linked Twitter account found.'}), 404
+
+    events = Event.query.filter_by(linked_account_id=linked_account.id).all()
+    return jsonify([{
+        'id': event.id,
+        'title': event.title,
+        'date': event.date
+    } for event in events]), 200
+
 @post_routes.route('/', methods=['POST'])
 @authenticate_user
 def schedule_post(user):
@@ -62,11 +78,13 @@ def schedule_post(user):
             if not linked_account or not linked_account.access_token:
                 print("No linked Twitter account found.")
                 return
-            job = scheduler.add_job(post_tweet, 'date', run_date=run_date, args=[linked_account.access_token,text])
-            print("trabajo añadido") 
+            job_id = str(uuid.uuid4())
+            job = scheduler.add_job(post_tweet, 'date', run_date=run_date, id=job_id, args=[linked_account.access_token, text])
+            Event.add_event(linked_account_id=linked_account.id, title=text, date=dt)
             #job.remove()
             return jsonify({
                 "message": "Post scheduled successfully!",
+                "job_id": job_id
             }), 201
     except ValueError as e:
         print(str(e))
