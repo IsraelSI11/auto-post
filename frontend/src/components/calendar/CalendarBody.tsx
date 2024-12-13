@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { CirclePlus } from "lucide-react";
 import { postTweetAction } from "@/app/actions/postTweetAction";
 import { Post } from "@/app/types/post";
+import { deleteTweetAction } from "@/app/actions/deleteTweetAction";
 
 type CalendarBodyProps = {
 
@@ -60,6 +61,14 @@ export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
       setSelectedStartTime(null);
     }
   };
+
+  const deleteEvent = async () => {
+    if (selectedEvent) {
+      await deleteTweetAction(selectedEvent);
+      setPosts(posts.filter((post) => post.id !== selectedEvent));
+      setSelectedEvent(null);
+    }
+  }
 
   const getEventsForDateAndHour = (date: Date, hour: number) => {
     return posts.filter((post) => {
@@ -178,7 +187,7 @@ export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
             })}
           </p>
           <div>
-            <Button variant={"destructive"} onClick={addEvent}>
+            <Button variant={"destructive"} onClick={deleteEvent}>
               Eliminar publicación
             </Button>
           </div>

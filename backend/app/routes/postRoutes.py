@@ -80,7 +80,7 @@ def schedule_post(user):
                 return
             job_id = str(uuid.uuid4())
             job = scheduler.add_job(post_tweet, 'date', run_date=run_date, id=job_id, args=[linked_account.access_token, text])
-            Event.add_event(linked_account_id=linked_account.id, title=text, date=dt)
+            Event.add_event(id=job_id,linked_account_id=linked_account.id, title=text, date=dt)
             #job.remove()
             return jsonify({
                 "message": "Post scheduled successfully!",
@@ -88,4 +88,28 @@ def schedule_post(user):
             }), 201
     except ValueError as e:
         print(str(e))
+        return jsonify({'message': str(e)}), 400
+
+@post_routes.route('/<job_id>', methods=['DELETE'])
+@authenticate_user
+def delete_scheduled_post(user, job_id):
+    try:
+        with app.app_context():
+            linked_account = LinkedAccount.query.filter_by(user_id=user.id).first()
+            if not linked_account:
+                print("No linked Twitter account found.")
+                return jsonify({'message': 'No linked Twitter account found.'}), 404
+            job = scheduler.get_job(job_id)
+            if not job:
+                print("Job not found.")
+                return jsonify({'message': 'Job not found.'}), 404
+            # Comprobamos que el evento está asociado a la cuenta de Twitter del usuario
+            event = Event.query.filter_by(id=job_id, linked_account_id=linked_account.id).first()
+            if not event:
+                print("Job not foundasdasd.")
+                return jsonify({'message': 'Job not found.'}), 404
+            Event.delete_event(job_id)
+            job.remove()
+            return jsonify({'message': 'Job deleted successfully!'}), 200
+    except ValueError as e:
         return jsonify({'message': str(e)}), 400
