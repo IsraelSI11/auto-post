@@ -12,10 +12,9 @@ import { SocialAccount } from '../types/socialAccount'
 
 interface SocialAccountRowProps {
   account: SocialAccount
-  onDelete: (id: string) => void
 }
 
-export function LinkedAccountRow({ account, onDelete }: SocialAccountRowProps) {
+export function LinkedAccountRow({ account }: SocialAccountRowProps) {
   return (
     <div className="flex items-center justify-between bg-white rounded-lg p-4 shadow-sm">
       <div className="flex items-center gap-3">
@@ -41,7 +40,7 @@ export function LinkedAccountRow({ account, onDelete }: SocialAccountRowProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => onDelete(account.id)}>
+          <DropdownMenuItem>
             Eliminar cuenta
           </DropdownMenuItem>
         </DropdownMenuContent>
