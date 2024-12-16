@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 
-export async function getLinkedAccounts() {
+export async function getAccountInfo() {
   const cookieStore = await cookies();
   const jwt = cookieStore.get("jwt")?.value ?? "";
 
@@ -11,7 +11,11 @@ export async function getLinkedAccounts() {
       "Content-Type": "application/json",
     },
   });
-  console.log(response)
+
+  if (response.status === 404) {
+    return null;
+  }
+
   if (!response.ok) {
     throw new Error("Failed to fetch linked accounts");
   }

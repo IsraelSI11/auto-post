@@ -1,6 +1,6 @@
 'use client'
 
-import { Twitter } from 'lucide-react'
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -18,12 +18,14 @@ export function LinkedAccountRow({ account }: SocialAccountRowProps) {
   return (
     <div className="flex items-center justify-between bg-white rounded-lg p-4 shadow-sm">
       <div className="flex items-center gap-3">
-        <Twitter className="h-5 w-5" />
-        <span className="text-sm font-medium">{account.accountName}</span>
+        <Image src="/x-logo.png" alt="X/Twitter logo" width={42} height={42} />
+        <Image className="rounded-full" src={account.image_url} alt="Profile image" width={42} height={42} />
+        <span className="ml-2 text-sm font-medium">{account.name}</span>
       </div>
+      
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
+          <Button variant="ghost" className="size-10 p-0">
             <span className="sr-only">Open menu</span>
             <svg
               width="16"

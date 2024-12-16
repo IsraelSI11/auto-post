@@ -1,25 +1,12 @@
-import { getLinkedAccounts } from "@/lib/getLinkedAccounts";
-import { SocialAccount } from "../types/socialAccount";
+import { getAccountInfo } from "@/lib/getAccountInfo";
 import { LinkedAccountRow } from "./LinkedAccountRow";
 
 export default async function LinkedAccounts() {
+  const linkedAccount = await getAccountInfo();
 
-    const linkedAccounts = await getLinkedAccounts();
-
-    return (
-        <>
-            {linkedAccounts.length == 0 ? (
-                <div className="text-center py-4 text-muted-foreground">
-                    No hay cuentas vinculadas
-                </div>
-            ) : (
-                linkedAccounts.map((account: SocialAccount) => (
-                    <LinkedAccountRow
-                        key={account.id}
-                        account={account}
-                    />
-                ))
-            )}
-        </>
-    )
+  if (linkedAccount) {
+    return <LinkedAccountRow account={linkedAccount} />;
+  }else{
+    return <div className="text-center py-4 text-muted-foreground">No hay cuentas vinculadas</div>;
+  }
 }

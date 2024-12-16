@@ -26,11 +26,21 @@ def authenticate_user(func):
 @authenticate_user
 def get_linked_accounts(user):
     from ..models.linkedAccount import LinkedAccount
-    accounts = LinkedAccount.query.filter_by(user_id=user.id).all()
-    return jsonify([{
+    from ..services.twitter import get_profile_info
+    account = LinkedAccount.query.filter_by(user_id=user.id).first()
+    if not account:
+        return jsonify({'message': 'No linked account found.'}), 404
+    
+    profile_info = get_profile_info(account.access_token)
+    
+    if 'error' in profile_info:
+        return jsonify({'message': profile_info['error']}), 500
+    
+    return jsonify({
         'id': account.id,
-        'access_token': account.access_token
-    } for account in accounts]), 200
+        'name': profile_info['name'],
+        'image_url': profile_info['profile_image_url']
+    }), 200
 
 @linked_accounts_routes.route('/', methods=['POST'])
 @authenticate_user

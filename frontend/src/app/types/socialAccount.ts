@@ -1,5 +1,5 @@
 export type SocialAccount = {
     id: string
-    accountName: string
-    platform: string
+    name: string
+    image_url: string
   }

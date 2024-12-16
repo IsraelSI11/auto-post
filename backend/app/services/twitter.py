@@ -60,3 +60,39 @@ def post_tweet(access_token, tweet_text):
     else:
         print(f"Failed to post tweet. Status code: {response.status_code}")
         print("Response:", response.json())
+
+def get_profile_info(access_token):
+    """
+    Fetches the authenticated user's profile name and profile image URL from the X API v2.
+
+    Parameters:
+        access_token (str): The Bearer Token for OAuth 2.0 authentication.
+
+    Returns:
+        dict: The user's profile information (name and image URL) or an error message.
+    """
+    # Define the endpoint URL
+    url = "https://api.x.com/2/users/me"
+
+    # Define query parameters to include name and profile image URL
+    params = {
+        "user.fields": "name,profile_image_url",
+    }
+
+    # Define the headers for authentication
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+    }
+
+    # Make the GET request
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()  # Raise an error for HTTP codes 4xx/5xx
+        user_data = response.json()
+
+        # Extract the relevant fields (name and profile_image_url)
+        name = user_data.get("data", {}).get("name")
+        profile_image_url = user_data.get("data", {}).get("profile_image_url")
+        return {"name": name, "profile_image_url": profile_image_url}
+    except requests.exceptions.RequestException as e:
+        return {"error": str(e)}
