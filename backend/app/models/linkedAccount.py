@@ -23,6 +23,15 @@ class LinkedAccount(db.Model):
         db.session.add(new_account)
         db.session.commit()
         return new_account
+    
+    @staticmethod
+    def delete_linked_account(user_id):
+        account = LinkedAccount.query.filter_by(user_id=user_id).first()
+        if not account or account.user_id != user_id:
+            raise ValueError('Cuenta no encontrada o no autorizada.')
+
+        db.session.delete(account)
+        db.session.commit()
 
 
 # Relación en el modelo User

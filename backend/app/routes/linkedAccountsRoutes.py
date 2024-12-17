@@ -63,6 +63,20 @@ def add_linked_account(user):
         }), 201
     except ValueError as e:
         return jsonify({'message': str(e)}), 400
+    
+@linked_accounts_routes.route('/', methods=['DELETE'])
+@authenticate_user
+def delete_linked_account(user):
+    from ..models.linkedAccount import LinkedAccount
+    if not user:
+        return jsonify({'message': 'User not found!'}), 404
+    try:
+        LinkedAccount.delete_linked_account(user_id=user.id)
+        return jsonify({
+            'message': 'Linked account deleted successfully!'
+        }), 200
+    except ValueError as e:
+        return jsonify({'message': str(e)}), 400 
 
 """
 @linked_accounts_routes.route('/linked-accounts/<int:account_id>', methods=['PUT'])
@@ -85,17 +99,8 @@ def update_linked_account(user, account_id):
         'platform': account.platform,
         'account_identifier': account.account_identifier
     }), 200
-
-@linked_accounts_routes.route('/linked-accounts/<int:account_id>', methods=['DELETE'])
-@authenticate_user
-def delete_linked_account(user, account_id):
-    account = LinkedAccount.query.get(account_id)
-    if not account or account.user_id != user.id:
-        return jsonify({'message': 'Account not found or unauthorized!'}), 404
-
-    db.session.delete(account)
-    db.session.commit()
-
-    return jsonify({'message': 'Linked account deleted successfully!'}), 200
-
+    
 """
+
+
+

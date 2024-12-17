@@ -9,12 +9,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { SocialAccount } from '../types/socialAccount'
+import { deleteLinkedAccountAction } from "../actions/deleteLinkedAccounts"
 
 interface SocialAccountRowProps {
   account: SocialAccount
 }
 
 export function LinkedAccountRow({ account }: SocialAccountRowProps) {
+
+  const onDeleteLinkedAccount = async () => {
+    try {
+      await deleteLinkedAccountAction()
+      window.location.reload()
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <div className="flex items-center justify-between bg-white rounded-lg p-4 shadow-sm">
       <div className="flex items-center gap-3">
@@ -42,7 +53,7 @@ export function LinkedAccountRow({ account }: SocialAccountRowProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={onDeleteLinkedAccount}>
             Eliminar cuenta
           </DropdownMenuItem>
         </DropdownMenuContent>
