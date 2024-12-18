@@ -20,6 +20,7 @@ def create_app():
     from .routes.authRoutes import auth_routes
     from .routes.postRoutes import post_routes
     from .routes.linkedAccountsRoutes import linked_accounts_routes
+    from .routes.generateRoutes import generate_routes
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///autopost.db'
@@ -28,6 +29,7 @@ def create_app():
     app.register_blueprint(auth_routes, url_prefix='/')
     app.register_blueprint(linked_accounts_routes, url_prefix='/link')
     app.register_blueprint(post_routes, url_prefix='/post')
+    app.register_blueprint(generate_routes, url_prefix='/generate')
     with app.app_context():
         init_db()
     return app
