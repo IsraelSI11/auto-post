@@ -7,23 +7,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CirclePlus } from "lucide-react";
 import { postTweetAction } from "@/app/actions/postTweetAction";
 import { Post } from "@/app/types/post";
 import { deleteTweetAction } from "@/app/actions/deleteTweetAction";
+import { Textarea } from "../ui/textarea";
 
 type CalendarBodyProps = {
-
   weekDates: Date[];
 
   postsProps: Post[];
-
 };
 
 export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
-
   const [posts, setPosts] = useState(postsProps);
   const [newEvent, setNewEvent] = useState({ title: "" });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -39,22 +36,26 @@ export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
       const year = selectedDate.getFullYear();
       const month = selectedDate.getMonth();
       const day = selectedDate.getDate();
-      const formattedDate = new Date(`${year}-${(month + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")} ${selectedStartTime}`);
+      const formattedDate = new Date(
+        `${year}-${(month + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")} ${selectedStartTime}`,
+      );
 
       // Adjust for timezone offset
       const timezoneOffset = formattedDate.getTimezoneOffset() * 60000;
       const adjustedDate = new Date(formattedDate.getTime() - timezoneOffset);
 
-      const {job_id} = await postTweetAction({
+      const { job_id } = await postTweetAction({
         text: newEvent.title,
         date: adjustedDate,
       });
 
-      setPosts(posts.concat({
-        id: job_id,
-        title: newEvent.title,
-        date: formattedDate,
-      }));
+      setPosts(
+        posts.concat({
+          id: job_id,
+          title: newEvent.title,
+          date: formattedDate,
+        }),
+      );
 
       setNewEvent({ title: "" });
       setSelectedDate(null);
@@ -68,7 +69,7 @@ export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
       setPosts(posts.filter((post) => post.id !== selectedEvent));
       setSelectedEvent(null);
     }
-  }
+  };
 
   const getEventsForDateAndHour = (date: Date, hour: number) => {
     return posts.filter((post) => {
@@ -147,12 +148,13 @@ export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
               {selectedStartTime}
             </DialogTitle>
           </DialogHeader>
-          <Input
+          <Textarea
+            className="h-96 max-h-96"
             value={newEvent.title}
             onChange={(e) =>
               setNewEvent({ ...newEvent, title: e.target.value })
             }
-            placeholder="Enter event title"
+            placeholder="Enter tweet text"
           />
           <Button onClick={addEvent}>Publicar tweet</Button>
         </DialogContent>
@@ -180,7 +182,8 @@ export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
               })}{" "}
             a las{" "}
             {new Date(
-              posts.find((post) => post.id === selectedEvent)?.date || new Date(),
+              posts.find((post) => post.id === selectedEvent)?.date ||
+                new Date(),
             ).toLocaleTimeString("es-ES", {
               hour: "2-digit",
               minute: "2-digit",
