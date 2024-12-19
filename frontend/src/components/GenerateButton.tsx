@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
 import { generateTweetAction } from "@/app/actions/generateTweetAction";
 
-export default function GPTButton() {
+export default function GenerateButton() {
   const [generateText, setGenerateText] = useState(false);
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
@@ -23,16 +23,18 @@ export default function GPTButton() {
 
   return (
     <>
-      <Button className="size-10" onClick={()=>setGenerateText(true)}>Generate Text</Button>
+      <Button onClick={()=>setGenerateText(true)}>Generar Tweet con IA</Button>
       <Dialog
         open={generateText}
         onOpenChange={() => {
           setGenerateText(false);
+          setInputText("");
+          setOutputText("");
         }}
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>ChatGPT</DialogTitle>
+            <DialogTitle>Generar tweet</DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4">
             <Textarea
