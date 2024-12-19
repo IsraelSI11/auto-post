@@ -1,39 +1,31 @@
-from openai import OpenAI
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
+import requests
 
 def generate_tweet(text):
-    """
-    Generates a tweet using the ChatGPT API.
-
-    Parameters:
-        text (str): The input text to generate the tweet from.
-
-    Returns:
-        str: The generated tweet or an error message.
-    """
-
-    client = OpenAI()
+    
 
     load_dotenv()
 
-    client.api_key = os.getenv('OPENAI_API_KEY')
-
     try:
-        # Make the request to the ChatGPT API
-        completion = client.chat.completions.create(
-            model="o1-mini",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant taht converts text to tweets."},
-                {
-                    "role": "user",
-                    "content": f"Generate a tweet based on the following text in the language that is written: {text}",
-                }
-            ]
+        # Make the request to the Llama API on Server
+        response = requests.post(
+            os.getenv("LLAMA_API_URL"),
+            json={
+                "model": "llama-3.2-1b-instruct",
+                "messages": [
+                    {"role": "system", "content": "Make a tweet from the following text in the language it is written:"},
+                    {"role": "user", "content": text},
+                ],
+                "temperature": 0.7,
+                "max_tokens": -1,
+                "stream": False,
+            },
         )
-
-        # Extract the generated tweet from the response
-        tweet = completion.choices[0].text.strip()
-        return tweet
+        if response.status_code != 200:
+            return f"Error generating tweet: {response.text}"
+        
+        response_data = response.json().get("choices")[0].get("message").get("content")
+        return response_data
     except Exception as e:
         return f"Error generating tweet: {str(e)}"

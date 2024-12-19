@@ -17,7 +17,8 @@ export async function generateTweetAction(textToGenerate : string) {
   if (!response.ok) {
     throw new Error("Generation failed");
   }
-
+  console.log(response)
   const data = await response.json();
+  console.log(data)
   return data;
 }
