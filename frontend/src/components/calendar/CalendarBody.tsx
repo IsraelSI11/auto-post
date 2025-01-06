@@ -123,6 +123,7 @@ export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
                   }`}
                 >
                   <Button
+                    disabled={new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour) < new Date()}
                     onClick={() => {
                       setSelectedDate(date);
                       setSelectedStartTime(
