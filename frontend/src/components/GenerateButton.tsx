@@ -51,7 +51,7 @@ export default function GenerateButton() {
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               maxLength={MAX_INPUT_LENGTH}
-              placeholder="Enter text to generate tweet from"
+              placeholder="Escribe el texto para generar el tweet con IA"
             />
             {loading ? (
               <div className="flex flex-col items-center justify-center">
