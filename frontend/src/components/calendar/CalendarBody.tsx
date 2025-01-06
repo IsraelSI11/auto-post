@@ -101,15 +101,19 @@ export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
             <div key={hour} className="h-12 border-b relative">
               <div className="absolute top-0 h-full left-0 right-0 text-xs space-y-2 overflow-y-scroll styled-scrollbar group">
                 {getEventsForDateAndHour(date, hour).map((event) => (
-                  <button
-                    className="w-full"
-                    onClick={() => setSelectedEvent(event.id)}
+                  <div
                     key={event.id}
+                    className="flex justify-center items-center w-full"
                   >
-                    <p className="text-white font-semibold rounded mt-2 bg-air-superiority-blue hover:bg-uranian-blue hover:text-black pl-1 duration-200 truncate">
-                      {event.title}
-                    </p>
-                  </button>
+                    <button
+                      className="w-5/6"
+                      onClick={() => setSelectedEvent(event.id)}
+                    >
+                      <p className="text-white font-semibold rounded mt-2 bg-air-superiority-blue hover:bg-uranian-blue hover:text-black p-1 duration-200 truncate">
+                        {event.title}
+                      </p>
+                    </button>
+                  </div>
                 ))}
                 <div
                   className={`w-full h-full flex justify-center items-center ${

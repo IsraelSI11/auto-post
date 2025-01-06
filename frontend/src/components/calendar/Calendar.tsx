@@ -82,12 +82,15 @@ export default function Calendar({ posts: postsPromise }: { posts: Promise<Post[
           </span>
         </div>
         <Button variant="outline" onClick={() => setCurrentDate(new Date())}>
-          Today
+          Hoy
         </Button>
       </div>
       <div className="border rounded-lg overflow-hidden">
         <CalendarHeader weekDates={weekDates} />
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div className="flex flex-col items-center justify-center">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
+                <p className="mt-4">Cargando publicaciones</p>
+              </div>}>
           <CalendarBody weekDates={weekDates} postsProps={posts}/>
         </Suspense>
       </div>
