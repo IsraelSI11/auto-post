@@ -113,3 +113,34 @@ def delete_scheduled_post(user, job_id):
             return jsonify({'message': 'Job deleted successfully!'}), 200
     except ValueError as e:
         return jsonify({'message': str(e)}), 400
+    
+@post_routes.route('/<job_id>', methods=['PUT'])
+@authenticate_user
+def update_scheduled_post(user, job_id):
+    data = request.get_json()
+    text = data.get('text')
+
+    if not text:
+        return jsonify({'message': 'Text is required!'}), 400
+
+    try:
+        with app.app_context():
+            linked_account = LinkedAccount.query.filter_by(user_id=user.id).first()
+            if not linked_account or not linked_account.access_token:
+                print("No linked Twitter account found.")
+                return jsonify({'message': 'No linked Twitter account found.'}), 404
+            job = scheduler.get_job(job_id)
+            if not job:
+                print("Job not found.")
+                return jsonify({'message': 'Job not found.'}), 404
+            # Comprobamos que el evento está asociado a la cuenta de Twitter del usuario
+            event = Event.query.filter_by(id=job_id, linked_account_id=linked_account.id).first()
+            if not event:
+                print("Job not found.")
+                return jsonify({'message': 'Job not found.'}), 404
+            # Update the job with the new text
+            job.modify(args=[linked_account.access_token, text])
+            Event.update_event(event_id=job_id, title=text)
+            return jsonify({'message': 'Job updated successfully!'}), 200
+    except ValueError as e:
+        return jsonify({'message': str(e)}), 400

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,7 @@ import { postTweetAction } from "@/app/actions/postTweetAction";
 import { Post } from "@/app/types/post";
 import { deleteTweetAction } from "@/app/actions/deleteTweetAction";
 import { Textarea } from "../ui/textarea";
+import { editTweetAction } from "@/app/actions/editTweetAction";
 
 type CalendarBodyProps = {
   weekDates: Date[];
@@ -28,6 +29,11 @@ export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
     null,
   );
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
+  const [editEventText, setEditEventText] = useState<string | null>(null);
+
+  useEffect(() => {
+    setEditEventText(posts.find((post) => post.id === selectedEvent)?.title || "");
+  }, [selectedEvent]);
 
   const hours = Array.from({ length: 24 }, (_, i) => i);
 
@@ -67,6 +73,18 @@ export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
     if (selectedEvent) {
       await deleteTweetAction(selectedEvent);
       setPosts(posts.filter((post) => post.id !== selectedEvent));
+      setSelectedEvent(null);
+    }
+  };
+
+  const editEvent = async () => {
+    if (selectedEvent) {
+      await editTweetAction(selectedEvent,editEventText ?? "");
+      const updatedPosts = posts.map((post) =>
+        post.id === selectedEvent ? { ...post, title: editEventText ?? "" } : post,
+      );
+      setPosts(updatedPosts);
+      setEditEventText(null);
       setSelectedEvent(null);
     }
   };
@@ -123,7 +141,14 @@ export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
                   }`}
                 >
                   <Button
-                    disabled={new Date(date.getFullYear(), date.getMonth(), date.getDate(), hour) < new Date()}
+                    disabled={
+                      new Date(
+                        date.getFullYear(),
+                        date.getMonth(),
+                        date.getDate(),
+                        hour,
+                      ) < new Date()
+                    }
                     onClick={() => {
                       setSelectedDate(date);
                       setSelectedStartTime(
@@ -172,10 +197,16 @@ export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>
-              {posts.find((post) => post.id === selectedEvent)?.title}
-            </DialogTitle>
+            <DialogTitle>Editar tweet</DialogTitle>
           </DialogHeader>
+          <Textarea
+            className="h-96 max-h-96"
+            value={editEventText ?? ""}
+            onChange={(e) => {
+              setEditEventText(e.target.value);
+            }}
+            placeholder="Edit tweet text"
+          />
           <p>
             El tweet se publicará el{" "}
             {posts
@@ -194,10 +225,11 @@ export function CalendarBody({ weekDates, postsProps }: CalendarBodyProps) {
               minute: "2-digit",
             })}
           </p>
-          <div>
+          <div className="flex justify-between">
             <Button variant={"destructive"} onClick={deleteEvent}>
               Eliminar publicación
             </Button>
+            <Button onClick={editEvent}>Guardar cambios</Button>
           </div>
         </DialogContent>
       </Dialog>

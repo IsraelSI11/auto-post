@@ -26,6 +26,16 @@ class Event(db.Model):
         db.session.delete(event)
         db.session.commit()
         return event
+    
+    @staticmethod
+    def update_event(event_id, title, date=None):
+        # Actualizar evento
+        event = Event.query.get(event_id)
+        event.title = title
+        if date is not None:
+            event.date = date
+        db.session.commit()
+        return event
 
 
 # Relación en el modelo User
