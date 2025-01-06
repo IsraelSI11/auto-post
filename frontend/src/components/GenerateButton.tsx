@@ -13,13 +13,18 @@ export default function GenerateButton() {
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const generateTweet = async () => {
+    setLoading(true);
     try {
       const data = await generateTweetAction(inputText);
       setOutputText(data.tweet);
     } catch (e) {
       console.log(e);
       setOutputText("Error al generar el tweet");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,11 +53,18 @@ export default function GenerateButton() {
               maxLength={MAX_INPUT_LENGTH}
               placeholder="Enter text to generate tweet from"
             />
-            <Textarea
-              disabled
-              className="h-full resize-none"
-              value={outputText}
-            />
+            {loading ? (
+              <div className="flex flex-col items-center justify-center">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
+                <p className="mt-4">Generando tweet...</p>
+              </div>
+            ) : (
+              <Textarea
+                disabled
+                className="h-full resize-none"
+                value={outputText}
+              />
+            )}
           </div>
           <Button onClick={generateTweet} className="mt-4">
             Generar tweet
