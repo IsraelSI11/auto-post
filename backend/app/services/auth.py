@@ -24,6 +24,9 @@ def login_user(email, password):
     )
     return {'token': token}, 200
 
+def logout_user(token):
+    return {'message': 'User logged out successfully!'}, 200
+
 def verify_token(token):
     try:
         decoded_token = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
