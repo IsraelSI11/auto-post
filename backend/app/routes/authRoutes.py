@@ -23,6 +23,16 @@ def login():
 
     return jsonify(login_user(email, password))
 
+@auth_routes.route('/logout', methods=['POST'])
+def logout():
+    from ..services.auth import logout_user
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Token is missing!'}), 401
+
+    return jsonify(logout_user(token))  
+
+
 @auth_routes.route('/protected', methods=['GET'])
 def protected():
     from ..services.auth import verify_token
