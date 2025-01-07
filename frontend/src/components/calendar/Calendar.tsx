@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { CalendarHeader } from "./CalendarHeader";
 import { CalendarBody } from "./CalendarBody";
 import { Post } from "@/app/types/post";
+import { Loading } from "../Loading";
 
 export default function Calendar({ posts: postsPromise }: { posts: Promise<Post[]> }) {
   const posts: Post[] = use(postsPromise);
@@ -87,10 +88,7 @@ export default function Calendar({ posts: postsPromise }: { posts: Promise<Post[
       </div>
       <div className="border rounded-lg overflow-hidden">
         <CalendarHeader weekDates={weekDates} />
-        <Suspense fallback={<div className="flex flex-col items-center justify-center">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
-                <p className="mt-4">Cargando publicaciones</p>
-              </div>}>
+        <Suspense fallback={<Loading text="Cargando publicaciones..." />}>
           <CalendarBody weekDates={weekDates} postsProps={posts}/>
         </Suspense>
       </div>

@@ -8,8 +8,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { SocialAccount } from '../types/socialAccount'
-import { deleteLinkedAccountAction } from "../actions/deleteLinkedAccounts"
+import { SocialAccount } from '../../types/socialAccount'
+import { deleteLinkedAccountAction } from "../../actions/deleteLinkedAccounts"
 
 interface SocialAccountRowProps {
   account: SocialAccount

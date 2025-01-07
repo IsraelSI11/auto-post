@@ -1,5 +1,5 @@
 import Calendar from "@/components/calendar/Calendar";
-import { getPostsOfUser } from "../actions/getPostsOfUser";
+import { getPostsOfUser } from "../../actions/getPostsOfUser";
 import GenerateButton from "@/components/GenerateButton";
 
 export default function CreatePostPage() {

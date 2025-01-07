@@ -1,18 +1,17 @@
 import Image from "next/image";
 
 interface LogoProps {
-    width?: number;
-    height?: number;
+  className?: string
 }
 
-export default function Logo({ width = 60, height = 60 }: LogoProps) {
+export default function Logo({ className }: LogoProps) {
   return (
     <Image
       src="/logo.svg"
-      alt="App logo"
-      width={width}
-      height={height}
-      aria-hidden="true"
+      alt="Logo"
+      width={32}
+      height={32}
+      className={className}
     />
-  );
+  )
 }
