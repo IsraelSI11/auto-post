@@ -5,7 +5,8 @@ import Logo from "./Logo";
 import { Button } from "./ui/button";
 import { LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
+import { logoutAction } from "@/app/actions/logoutAction";
 
 
 const links = [
@@ -17,8 +18,9 @@ const links = [
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const pathname = usePathname()
   
-    const handleLogout = () => {
-      
+    const handleLogout = async () => {
+      await logoutAction();
+      redirect('/');
     }
   
     return (
