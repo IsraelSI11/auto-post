@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
 import { generateTweetAction } from "@/app/actions/generateTweetAction";
+import { Loading } from "./Loading";
 
 const MAX_INPUT_LENGTH = 3000;
 
@@ -52,12 +53,10 @@ export default function GenerateButton() {
               onChange={(e) => setInputText(e.target.value)}
               maxLength={MAX_INPUT_LENGTH}
               placeholder="Escribe el texto para generar el tweet con IA"
+              spellCheck="false"
             />
             {loading ? (
-              <div className="flex flex-col items-center justify-center">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
-                <p className="mt-4">Generando tweet...</p>
-              </div>
+              <Loading text="Generando tweet..." />
             ) : (
               <Textarea
                 disabled
