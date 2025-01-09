@@ -19,7 +19,7 @@ export default function LoginPage() {
                   height={60}
                   aria-hidden="true"
                 />
-                <h1 className="text-4xl font-bold mt-5 mb-3">Comienza</h1>
+                <h1 className="text-4xl font-bold mt-5 mb-3">Inicia sesión</h1>
                 <p className="text-muted-foreground">
                   Bienvenido a la app para automatizar posts
                 </p>
