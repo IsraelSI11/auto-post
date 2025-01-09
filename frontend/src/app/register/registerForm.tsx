@@ -50,7 +50,7 @@ export function RegisterForm() {
     }
     // Replace loginAction with registerAction
     registerAction(registerValues).then(() => {
-      redirect("/home");
+      redirect("/login");
     });
   }
 
