@@ -6,6 +6,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
 import { generateTweetAction } from "@/app/actions/generateTweetAction";
 import { Loading } from "./Loading";
+import { Copy } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
 const MAX_INPUT_LENGTH = 3000;
 
@@ -13,8 +15,8 @@ export default function GenerateButton() {
   const [generateText, setGenerateText] = useState(false);
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
-
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   const generateTweet = async () => {
     setLoading(true);
@@ -26,6 +28,23 @@ export default function GenerateButton() {
       setOutputText("Error al generar el tweet");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(outputText);
+      toast({
+        title: "Copiado al portapapeles",
+        description: "El tweet generado ha sido copiado al portapapeles.",
+      });
+    } catch (err) {
+      console.error("Error al copiar el texto: ", err);
+      toast({
+        title: "Error al copiar",
+        description: "Hubo un error al copiar el texto al portapapeles.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -58,11 +77,24 @@ export default function GenerateButton() {
             {loading ? (
               <Loading text="Generando tweet..." />
             ) : (
-              <Textarea
-                disabled
-                className="h-full resize-none"
-                value={outputText}
-              />
+              <div className="relative h-full">
+                <Textarea
+                  disabled
+                  className="h-full resize-none pr-10"
+                  value={outputText}
+                />
+                {outputText && (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="absolute top-2 right-2"
+                    onClick={copyToClipboard}
+                  >
+                    <Copy className="h-4 w-4" />
+                    <span className="sr-only">Copiar al portapapeles</span>
+                  </Button>
+                )}
+              </div>
             )}
           </div>
           <Button onClick={generateTweet} className="mt-4">
@@ -73,3 +105,4 @@ export default function GenerateButton() {
     </>
   );
 }
+
