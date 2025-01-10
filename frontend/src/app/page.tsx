@@ -25,9 +25,15 @@ export default function Home() {
               </Link>
             </li>
             <li>
-              <Link href="/login" className="hover:underline">
-                Iniciar sesión
-              </Link>
+              <Button
+                asChild
+                size="lg"
+                className="bg-air-superiority-blue text-white hover:bg-yinmn-blue text-xl p-2"
+              >
+                <Link href="/login" className="hover:underline">
+                  Iniciar sesión
+                </Link>
+              </Button>
             </li>
           </ul>
         </nav>
@@ -38,10 +44,23 @@ export default function Home() {
         <section className="text-center max-w-7xl w-full flex flex-col md:flex-row items-center gap-16 py-16">
           <div className="flex-1 space-y-8">
             <h1 className="text-6xl lg:text-7xl font-bold leading-tight">
-              Programa <span className="text-air-superiority-blue font-semibold">Tweets</span> en X<br />Impulsados con <span className="text-air-superiority-blue font-semibold">IA</span>
+              Programa{" "}
+              <span className="text-air-superiority-blue font-semibold">
+                Tweets
+              </span>{" "}
+              en X<br />
+              Impulsados con{" "}
+              <span className="text-air-superiority-blue font-semibold">
+                IA
+              </span>
             </h1>
             <p className="text-2xl mb-12 max-w-2xl mx-auto">
-              Automatiza tu presencia en X con programación inteligente y tweets generados por IA. Impulsa tu marca y <span className="text-air-superiority-blue font-semibold">conéctate</span> con tu audiencia sin complicaciones.
+              Automatiza tu presencia en X con programación inteligente y tweets
+              generados por IA. Impulsa tu marca y{" "}
+              <span className="text-air-superiority-blue font-semibold">
+                conéctate
+              </span>{" "}
+              con tu audiencia sin complicaciones.
             </p>
             <Button
               asChild
@@ -71,7 +90,7 @@ export default function Home() {
           <h2 className="col-span-2 text-4xl font-bold text-center mb-12">
             ¿Por qué utilizar Auto Post?
           </h2>
-          
+
           <div className="bg-air-superiority-blue/10 p-6 rounded-lg">
             <h3 className="text-2xl font-semibold mb-4">
               Generación de Tweets por IA
@@ -91,7 +110,6 @@ export default function Home() {
               constante en X sin esfuerzo.
             </p>
           </div>
-          
         </section>
 
         {/* Nueva Sección de Interfaz */}
