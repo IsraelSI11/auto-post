@@ -21,7 +21,10 @@ const roboto = localFont({
 
 export const metadata: Metadata = {
   title: "Auto post",
-  description: "Automatiza tus publicaciones en X con precisión impulsada por IA",
+  description:
+    "Automatiza tus publicaciones en X con precisión impulsada por IA",
+  viewport: "width=device-width, initial-scale=1.0",
+  icons: "/favicon.svg",
 };
 
 export default function RootLayout({

@@ -13,7 +13,7 @@ export default function Home() {
           height={60}
         />
         <nav>
-          <ul className="flex gap-6">
+          <ul className="flex items-center gap-6">
             <li>
               <Link href="#features" className="hover:underline">
                 Características
@@ -28,7 +28,7 @@ export default function Home() {
               <Button
                 asChild
                 size="lg"
-                className="bg-air-superiority-blue text-white hover:bg-yinmn-blue text-xl p-2"
+                className="bg-air-superiority-blue text-white hover:bg-yinmn-blue p-2"
               >
                 <Link href="/login" className="hover:underline">
                   Iniciar sesión
